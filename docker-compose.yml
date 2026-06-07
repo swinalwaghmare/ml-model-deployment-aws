@@ -6,6 +6,11 @@ services:
     ports:
       - "8000:8000"
     container_name: iris-classifier
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=us-east-1
+      - S3_BUCKET=iris-classifier-model-swinalwaghmare
   
   prometheus:
     image: prom/prometheus:latest
