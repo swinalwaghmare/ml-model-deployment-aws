@@ -25,3 +25,13 @@ services:
     ports: 
       - "3000:3000"
     container_name: grafana
+
+  nginx: 
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app
+    container_name: nginx-proxy
