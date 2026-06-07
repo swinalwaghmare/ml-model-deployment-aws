@@ -8,12 +8,15 @@ import joblib
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI(
     title="Iris Classifier API",
     description="ML inference service - part of the AWS CI/CD pipeline project",
     version="1.0.0"
 )
+
+Instrumentator().instrument(app).expose(app)
 
 BASE_DIR   = Path(__file__).resolve().parent.parent
 MODEL_PATH = BASE_DIR / "model" / "iris_model.pkl"
