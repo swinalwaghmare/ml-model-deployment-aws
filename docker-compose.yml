@@ -1,0 +1,22 @@
+version: "3.8"
+
+services: 
+  app: 
+    build: .
+    ports:
+      - "8000:8000"
+    container_name: iris-classifier
+  
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    ports: 
+      - "3000:3000"
+    container_name: grafana
