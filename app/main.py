@@ -1,3 +1,7 @@
+import boto3
+import os
+import tempfile
+
 import json
 import time
 from pathlib import Path
@@ -18,12 +22,20 @@ app = FastAPI(
 
 Instrumentator().instrument(app).expose(app)
 
-BASE_DIR   = Path(__file__).resolve().parent.parent
-MODEL_PATH = BASE_DIR / "model" / "iris_model.pkl"
-META_PATH  = BASE_DIR / "model" / "model_metadata.json"
+S3_BUCKET = os.getenv("S3_BUCKET", "iris-classifier-model-swinalwaghmare")
+MODEL_KEY = "model/iris_model.pkl"
+META_KEY  = "model/model_metadata.json"
 
-model = joblib.load(MODEL_PATH)
-with open(META_PATH) as f:
+TMP_DIR = tempfile.gettempdir()
+MODEL_FILE = os.path.join(TMP_DIR, 'iris_model.pkl')
+META_FILE = os.path.join(TMP_DIR, "model_metadata.json")
+
+s3 = boto3.client("s3")
+s3.download_file(S3_BUCKET, MODEL_KEY, MODEL_FILE)
+s3.download_file(S3_BUCKET, META_KEY, META_FILE)
+
+model = joblib.load(MODEL_FILE)
+with open( META_FILE ) as f:
     metadata = json.load(f)
 
 CLASS_NAMES = metadata["classes"]
